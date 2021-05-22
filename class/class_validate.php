@@ -55,27 +55,27 @@
 			}else{
 				return array("status"  => false, "code" => "error", "message" => "invalid post datas.");
 			}	
-		}				
-	}
-	
-	private function CheckKey($key){
-		switch($key){																										
-			case "passphrase":	
-			case "cpassphrase":	
-			case "mnemonic":
-			case "mnemonic_confirmation":		
-			case "referral":	
-			case "email":	
-			case "message":										
-			case "account":			
-			case "amount":										
-			case "recipient-name":	
-			case "recipient-address":
-			case "pool":
-				return true; 		
-				break;
-			default :															
-				return false; 		  
 		}		
+		
+		private function CheckKey($key){
+			switch($key){																										
+				case "passphrase":	
+				case "cpassphrase":	
+				case "mnemonic":
+				case "mnemonic_confirmation":		
+				case "referral":	
+				case "email":	
+				case "message":										
+				case "account":			
+				case "amount":										
+				case "recipient-name":	
+				case "recipient-address":
+				case "pool":
+					return true; 		
+					break;
+				default :															
+					return false; 		  
+			}		
+		}
 	}
 ?>
