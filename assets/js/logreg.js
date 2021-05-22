@@ -237,6 +237,14 @@ function ClearInput(_form){
 		}
 	}
 }
+function showWaiting(){
+	$("#loading-indicator").removeClass("hidediv");
+	$("#loading-indicator").addClass("showdiv");
+}
+function hideWaiting(){
+	$("#loading-indicator").removeClass("showdiv");
+	$("#loading-indicator").addClass("hidediv");
+}
 function UpdateUI(_form, _object, _selector){
 	privateUI(_form, _object);
 	switch (_selector){
@@ -250,14 +258,17 @@ function UpdateUI(_form, _object, _selector){
 				case "success" :
 					$('#'+_form.id+' *[name=alert-info]').addClass("alert alert-info");
 					$('#'+_form.id+' *[name=alert-info]').html('<strong>Info!</strong> '+_object.message);
+					hideWaiting();
 					break;
 				case "warning" :
 					$('#'+_form.id+' *[name=alert-info]').addClass("alert alert-warning");
 					$('#'+_form.id+' *[name=alert-info]').html('<strong>Warning!</strong> '+_object.message);
+					hideWaiting();
 					break;
 				case "error" :
 					$('#'+_form.id+' *[name=alert-info]').addClass("alert alert-danger");
 					$('#'+_form.id+' *[name=alert-info]').html('<strong>Error!</strong> '+_object.message);
+					hideWaiting();
 					break;
 			}
 			break;
@@ -266,23 +277,26 @@ function UpdateUI(_form, _object, _selector){
 				case "redirect":
 					window.location.replace(_object.url);
 					break;
-				case "success" :
+				case "success" :				
 					$("#xTitre").css('color','#0275B8');
 					$("#xTitre").html(_object.code);
 					$("#xMessage").html(_object.message);
 					$("#alert-message").modal("show");
+					hideWaiting();
 					break;
 				case "warning" :
 					$("#xTitre").css('color','#F0AD4E');
 					$("#xTitre").html(_object.code);
 					$("#xMessage").html(_object.message);
 					$("#alert-message").modal("show");
+					hideWaiting();
 					break;
 				case "error" :
 					$("#xTitre").css('color','#D9534F');
 					$("#xTitre").html(_object.code);
 					$("#xMessage").html(_object.message);
 					$("#alert-message").modal("show");
+					hideWaiting();
 					break;
 			}
 			break;
@@ -347,27 +361,56 @@ function privateUI(_form, _object){
 			break;
 	}
 }
-function showWaiting(){
-	$("#loading-indicator").removeClass("hidediv");
-	$("#loading-indicator").addClass("showdiv");
+/* CREATE WALLET */
+function GenerateWallet(){
+	GetRequest();	
 }
-function hideWaiting(){
-	$("#loading-indicator").removeClass("showdiv");
-	$("#loading-indicator").addClass("hidediv");
+function GetRequest() {
+	var _err = false;
+	showWaiting();
+	fetch("createwallet/genmnemonic")
+	.then(response => {		
+		if (response.ok) {
+			return response.text();
+		}else{
+			_err = true;			
+		}
+	})
+	.then(data => {
+		if (!_err){
+			try {
+				var _object = JSON.parse(data);
+				var lg = _object.mnemonic.length;
+				var mnemonic = "";
+				for (i=0;i<lg;i++){
+					if (mnemonic != "") mnemonic = mnemonic + " ";
+					mnemonic = mnemonic + _object.mnemonic[i];
+				}
+				$('#mnemonic').val(mnemonic);
+				$('#mnemonic').addClass("is-valid").removeClass("is-invalid");
+				$('#a-section').removeClass('showdiv').addClass('hidediv');
+				$('#g-section').removeClass('hidediv').addClass('showdiv');
+			} catch(err) {				
+				$('#mnemonic').val("an error has occurred, unable create mnemonic words.");
+				$('#mnemonic').addClass("is-invalid").removeClass("is-valid");
+			}
+		}else{			
+			$('#mnemonic').val("an error has occurred, unable create mnemonic words.");
+			$('#mnemonic').addClass("is-invalid").removeClass("is-valid");
+		}
+		hideWaiting();
+	})
+	.catch(function(error) {		
+		$('#mnemonic').val("an error has occurred, unable create mnemonic words.");
+		$('#mnemonic').addClass("is-invalid").removeClass("is-valid");	
+		hideWaiting();	
+	});
 }
-/* WALLET */
 function showNext(){
 	if (validate('frm-createwallet','mnemonic_confirmation')){
 		$('#g-section').removeClass('showdiv').addClass('hidediv');
 		$('#m-section').removeClass('hidediv').addClass('showdiv');
 	}
-}
-function showOpenWallet(){
-	$('#open-wallet').removeClass('hidediv').addClass('showdiv');
-	$('#create-wallet').removeClass('showdiv').addClass('hidediv');
-}
-function showCreatWallet(){
-	GetRequest();
 }
 /* WITHDRAW */
 var _isMax = false;
@@ -401,8 +444,7 @@ function PostRequest(_form, _selector) {
 		};		
 	showWaiting();
 	fetch(_form.dataset.url, _req)
-	.then(response => {
-		hideWaiting();		
+	.then(response => {		
 		if (response.ok) {
 			return response.text();
 		} else {
@@ -421,46 +463,6 @@ function PostRequest(_form, _selector) {
 		}
 	})
 	.catch(function(error) {		
-		UpdateUI(_form, {code: "error", message: error}, _selector);
-	});
-}
-function GetRequest() {
-	var _err = false;
-	showWaiting();
-	fetch("createwallet/genmnemonic")
-	.then(response => {
-		hideWaiting();
-		if (response.ok) {
-			return response.text();
-		}else{
-			_err = true;			
-		}
-	})
-	.then(data => {
-		if (!_err){
-			try {
-				var _object = JSON.parse(data);
-				var lg = _object.mnemonic.length;
-				var mnemonic = "";
-				for (i=0;i<lg;i++){
-					if (mnemonic != "") mnemonic = mnemonic + " ";
-					mnemonic = mnemonic + _object.mnemonic[i];
-				}
-				$('#mnemonic').val(mnemonic);
-				$('#mnemonic').addClass("is-valid").removeClass("is-invalid");
-				$('#open-wallet').removeClass('showdiv').addClass('hidediv');
-				$('#create-wallet').removeClass('hidediv').addClass('showdiv');
-			} catch(err) {				
-				$('#mnemonic').val("an error has occurred, unable create mnemonic words.");
-				$('#mnemonic').addClass("is-invalid").removeClass("is-valid");
-			}
-		}else{			
-			$('#mnemonic').val("an error has occurred, unable create mnemonic words.");
-			$('#mnemonic').addClass("is-invalid").removeClass("is-valid");
-		}
-	})
-	.catch(function(error) {		
-		$('#mnemonic').val("an error has occurred, unable create mnemonic words.");
-		$('#mnemonic').addClass("is-invalid").removeClass("is-valid");
+		UpdateUI(_form, {code: "error", message: error}, _selector);	
 	});
 }
