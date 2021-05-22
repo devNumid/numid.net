@@ -1,0 +1,2 @@
+<link rel="stylesheet" href="assets/modules/datatables/1.10.23/css/dataTables.bootstrap4.min.css">
+<link rel="stylesheet" href="assets/modules/datatables/responsive/2.2.7/css/responsive.bootstrap4.min.css">
