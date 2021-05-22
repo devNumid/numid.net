@@ -53,7 +53,7 @@
 		}
 
 		private function GenShareLink() {			
-			return "https://numid.net/openwallet-".$this->db->getShareLink(array($this->auth["id"]));								
+			return "https://numid.net/createwallet-".$this->db->getShareLink(array($this->auth["id"]));								
 		}	
 	}
 ?>
