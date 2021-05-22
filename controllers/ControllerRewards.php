@@ -18,11 +18,10 @@
 		}
 
 		public function index() {			
-			$dataTemplate = array("titre"      => "Rewards",
-								  "visibility" => true, 
-								  "menu"       => $this->gf->InitMenuArray("rewards", "active"));				
+			$dataTemplate = array("titre" => "Rewards");				
 			
-			$dataView = array("Rewards" => $this->GenRewardsTab());
+			$dataView = array("Rewards" => $this->GenRewardsTab(),
+			                  "menu"    => $this->gf->InitMenuArray("rewards", "active"));
 			
 			$this->buildView(array("dataTemplate" => $dataTemplate, "dataView" => $dataView));			
 		}

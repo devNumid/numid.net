@@ -18,22 +18,20 @@
 		}
 
 		public function index() {			
-			$Wallet = $this->getWalletInfos($this->auth["id"]);						
+			$Wallet = $this->getWalletInfos($this->auth["id"]);	
+
+			$dataTemplate = array("titre" => "Dashboard");
+			
 			switch ($_SESSION['status']){
-				case "syncing":
-					$dataTemplate = array("titre"      => "Dashboard",
-										  "visibility" => true, 
-										  "menu"       => $this->gf->DisableMenuArray("text-danger disabled"));
+				case "syncing":					
 					$isSyncing = "showdiv";
 					$isReady = "hidediv";
 					$isNotResponding = "hidediv";								
 					$delegation_message = '';
 					$delegation_action = '';
+					$menu = $this->gf->DisableMenuArray("text-danger disabled");
 					break;
 				case "ready":
-					$dataTemplate = array("titre"      => "Dashboard",
-										  "visibility" => true, 
-										  "menu"       => $this->gf->InitMenuArray("dashboard", "active"));
 					$isSyncing = "hidediv";
 					$isReady = "showdiv";
 					$isNotResponding = "hidediv";				
@@ -49,19 +47,18 @@
 						case "none":
 						default:
 							$delegation_message = '<span>Your wallet is not delegated</span>';
-							$delegation_action = '<form id="frm-getdelegatefee" data-url="/dashboard/getdelegatefee" data-method="post" class="needs-validation" data-selector="modal" novalidate><button class="btn btn-falcon-warning btn-sm mr-1 mb-1" type="submit"><i class="fas fa-sign-in-alt"></i> delegatate</button></form>';
+							$delegation_action = '<form id="frm-getdelegatefee" data-url="/dashboard/getdelegatefee" data-method="post" class="needs-validation" data-selector="modal" novalidate><button class="btn btn-falcon-warning btn-sm mr-1 mb-1" type="submit"><i class="fas fa-sign-in-alt"></i> Delegate</button></form>';
 							break;
 					}
+					$menu = $this->gf->InitMenuArray("dashboard", "active");
 					break;
 				case "not_responding":
-					$dataTemplate = array("titre"      => "Dashboard",
-										  "visibility" => true, 
-										  "menu"       => $this->gf->DisableMenuArray("text-danger disabled"));		
 					$isSyncing = "hidediv";
 					$isReady = "hidediv";
 					$isNotResponding = "showdiv";						
 					$delegation_message = '';
 					$delegation_action = '';
+					$menu = $this->gf->DisableMenuArray("text-danger disabled");
 					break;
 			}
 			$pools = $this->GenPoolLocalList();
@@ -74,7 +71,8 @@
 							  "isReady"            => $isReady,
 							  "isNotResponding"    => $isNotResponding,
 							  "progress"           => $Wallet['progress'],							  
-							  "Transactions"       => $this->getClientTransactionTable($this->auth["id"]));
+							  "Transactions"       => $this->getClientTransactionTable($this->auth["id"]),
+							  "menu"               => $menu);
 						  
 			$this->buildView(array("dataTemplate" => $dataTemplate, "dataView" => $dataView));			
 		}

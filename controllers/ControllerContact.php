@@ -17,10 +17,8 @@
 		}
 
 		public function index() {			
-			$dataTemplate = array("titre"      => "Contact",
-								  "visibility" => true, 
-								  "menu"       => $this->gf->InitMenuArray("contact", "active"));	
-			$dataView = array();
+			$dataTemplate = array("titre" => "Contact");	
+			$dataView = array("menu" => $this->gf->InitMenuArray("contact", "active"));
 			
 			$this->buildView(array("dataTemplate" => $dataTemplate, "dataView" => $dataView));			
 		}

@@ -2,10 +2,8 @@
 	require_once 'framework/Controller.php';
 	require_once 'models/App.php';
 	require_once 'class/class_client.php';
-	require_once 'class/class_token.php';
-	require_once 'class/class_cookie.php';
+	require_once 'class/class_encryption.php';	
 	require_once 'class/class_globales.php';
-	require_once 'config/config_domain.php';
 	
 	class ControllerOpenwallet extends Controller {
 
@@ -31,23 +29,13 @@
 		public function open(){
 			$PostArray = $this->gf->extractPostData(array("passphrase", "mnemonic"));						
 			$resultat = $this->connectWallet($PostArray['passphrase'], $PostArray['mnemonic']);
-			if($resultat['status']){							
-				$Tk = new Token(DOMAIN_FULL);
-				$Resultat = $Tk->GenTokens($resultat['wallet']);
-				if ($Resultat['status']){					
-					$cookie = new Cookie();
-					$cookie_expiration_time = time()+REFRESH_TOKEN_VALID_DURATION;				
-					$cookie->SetNoHttpCookie("refresh_token", $Resultat['refresh_token'], $cookie_expiration_time, "/", DOMAIN_FULL);								
-					$cookie->SetNoHttpCookie("access_token",  $Resultat['access_token'], $cookie_expiration_time, "/", DOMAIN_FULL);					
-					echo json_encode(array("status"  => true,												  
-										   "code"    => "redirect",										  
-										   "message" => "authorised access",
-										   "url"     => "dashboard"));	
-				}else{				
-					echo json_encode(array("status"  => false,
-										   "code"    => "error",
-										   "message" => "error has occurred when signin, please try again."));
-				}						
+			if($resultat['status']){				
+				$crypt = new Encryption();
+				$_SESSION['token'] = $crypt->encrypt($resultat['wallet']);
+				echo json_encode(array("status"  => true,												  
+									   "code"    => "redirect",										  
+									   "message" => "authorised access",
+									   "url"     => "dashboard"));										
 			}else{
 				echo json_encode($resultat);
 			}				

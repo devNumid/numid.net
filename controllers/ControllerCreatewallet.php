@@ -1,11 +1,8 @@
 <?php
 	require_once 'framework/Controller.php';
 	require_once 'models/App.php';
-	require_once 'class/class_client.php';
-	require_once 'class/class_token.php';
-	require_once 'class/class_cookie.php';
+	require_once 'class/class_client.php';	
 	require_once 'class/class_globales.php';
-	require_once 'config/config_domain.php';
 	
 	require_once 'lib/mnemonic/BIP39.php';
 	require_once 'lib/mnemonic/WordList.php';
@@ -53,7 +50,7 @@
 					if($resultat['status']){
 						echo json_encode(array("status"  => true,
 						                       "code"    => "success",
-											   "message" => "you wallet has been successfully created please <a href=\"#\" onclick=\"showOpenWallet();\"><strong>click here</strong></a> to open your wallet."));				
+											   "message" => "you wallet has been successfully created please <a href=\"openwallet\" ><strong>click here</strong></a> to open your wallet."));				
 					}else{
 						echo json_encode($resultat);
 					}	

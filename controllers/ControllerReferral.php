@@ -17,12 +17,11 @@
 		}
 
 		public function index() {			
-			$dataTemplate = array("titre"      => "Referral",
-								  "visibility" => true, 
-								  "menu"       => $this->gf->InitMenuArray("referral", "active"));	
+			$dataTemplate = array("titre" => "Referral");	
 								  
 			$dataView = array("Referral"   => $this->GenReferralTab(),
-							  "share_link" => $this->GenShareLink());			
+							  "share_link" => $this->GenShareLink(),
+							  "menu"       => $this->gf->InitMenuArray("referral", "active"));			
 						
 			$this->buildView(array("dataTemplate" => $dataTemplate, "dataView" => $dataView));			
 		}

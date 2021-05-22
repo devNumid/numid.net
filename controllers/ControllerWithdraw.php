@@ -18,9 +18,7 @@
 		}
 
 		public function index() {				
-			$dataTemplate = array("titre"      => "Withdraw",
-								  "visibility" => true, 
-								  "menu"       => $this->gf->InitMenuArray("withdraw", "active"));	
+			$dataTemplate = array("titre" => "Withdraw");	
 		
 			$Balance = $this->GetWithdawableBalance($this->auth["id"]);			
 			$balance_avaible = $Balance["avaiable"];
@@ -31,7 +29,8 @@
 							  "withdrawble_balance" => $this->gf->ConvertLovelaceToAda($balance_withdrawble),
 							  "avaible_balance"     => $this->gf->ConvertLovelaceToAda($balance_avaible),
 							  "delegation_balance"  => $this->gf->ConvertLovelaceToAda($balance_reward),
-							  "afiiliation_balance" => $this->gf->ConvertLovelaceToAda($balance_affiliation));
+							  "afiiliation_balance" => $this->gf->ConvertLovelaceToAda($balance_affiliation),
+							  "menu"                => $this->gf->InitMenuArray("withdraw", "active"));
 		
 			$this->buildView(array("dataTemplate" => $dataTemplate, "dataView" => $dataView));			
 		}
@@ -141,7 +140,7 @@
 		}		
 		
 		private function GenAddressList($walletId){
-			$wallets = $this->db->getWalletAddress(array($walletId));
+			$wallets = $this->db->getRecipientAddress(array($walletId));
 			$comboBox = "<select class=\"form-control\" name=\"account\" data-selector=\"serialize\">";	
 			$comboBox .= "<option value=\"\">Select address</option>";
 			foreach ($wallets as $wallet){				
